@@ -99,15 +99,15 @@ PanelWindow {
             anchors { fill: parent; leftMargin: 16; rightMargin: 16 }
             spacing: 12
 
-            Text {
-                text: root.brightness > 60 ? "\uf185"
-                    : root.brightness > 20 ? "\uf042"
-                    :                        "\uf186"
-                font.pixelSize: 18
-                font.family:    "JetBrainsMono Nerd Font"
-                color: Colors.colBlue
-                Behavior on color { ColorAnimation { duration: 150 } }
-            }
+	            Text {
+	                text: root.brightness > 60 ? "󰃠"
+	                    : root.brightness > 20 ? "󰃟"
+	                    :                        "󰃞"
+	                font.pixelSize: 18
+	                font.family:    "JetBrainsMono Nerd Font"
+	                color: MatuColors.md3.secondary
+	                Behavior on color { ColorAnimation { duration: 150 } }
+	            }
 
             Rectangle {
                 Layout.fillWidth: true
@@ -116,7 +116,7 @@ PanelWindow {
                 Rectangle {
                     width:  parent.width * Math.min(root.brightness / 100.0, 1.0)
                     height: parent.height; radius: parent.radius
-                    color:  Colors.colBlue
+                    color:  MatuColors.md3.secondary
                     Behavior on width { NumberAnimation { duration: 80  } }
                 }
             }
@@ -125,7 +125,7 @@ PanelWindow {
                 text:                root.brightness + "%"
                 font.pixelSize:      12
                 font.weight:         Font.Medium
-                color:               Colors.colFg
+                color:                 MatuColors.md3.on_surface
                 Layout.preferredWidth: 44
                 horizontalAlignment: Text.AlignRight
             }

@@ -55,6 +55,7 @@ Rectangle {
             font {
                 family: "JetBrainsMono Nerd Font"
                 pixelSize: 16
+                bold: true
             }
             color: Colors.colFg
             elide: Text.ElideRight

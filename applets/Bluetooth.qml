@@ -2,7 +2,7 @@ import Quickshell
 import QtQuick
 import Quickshell.Bluetooth
 import Quickshell.Io
-import "../quicksettings" // <-- Belangrijk voor QuickSettingsState
+import "../quicksettings"
 import "../theme"
 
 Rectangle {
@@ -20,7 +20,7 @@ Rectangle {
     }
 
     color: isEnabled
-        ? Qt.rgba(0.2, 0.6, 1.0, 0.25)
+        ? Qt.alpha(MatuColors.md3.primary, 0.25)
         : Qt.rgba(1, 1, 1, 0.07)
 
     Behavior on color { ColorAnimation { duration: 150 } }
@@ -38,7 +38,7 @@ Rectangle {
             font.family: "JetBrainsMono Nerd Font"
             font.pixelSize: 16
             font.bold: true
-            color: isEnabled ? Qt.rgba(0.5, 0.8, 1.0, 1) : Colors.colFg
+            color: isEnabled ? MatuColors.md3.primary : MatuColors.md3.on_background
         }
 
         Text {
@@ -56,7 +56,7 @@ Rectangle {
             font.family: "JetBrainsMono Nerd Font"
             font.pixelSize: 16
             font.bold: true
-            color: Colors.colFg
+            color: MatuColors.md3.on_background
         }
     }
 

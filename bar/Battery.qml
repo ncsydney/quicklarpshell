@@ -33,7 +33,7 @@ RowLayout {
 
     Text {
         text: root.level + "%  "
-        color: root.charging ? Colors.colPurple : Colors.colFg
+        color: root.charging ? MatuColors.md3.tertiary : Colors.colFg
 
         font {
             family: "SF Pro Display"

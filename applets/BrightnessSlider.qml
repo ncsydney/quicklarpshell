@@ -67,7 +67,7 @@ Slider {
         Rectangle {
             width: root.visualPosition * parent.width
             height: parent.height
-            color: MatuColors.md3.secondary
+            color: Qt.alpha(MatuColors.md3.primary, 0.25)
             radius: parent.radius
         }
 
@@ -78,7 +78,7 @@ Slider {
 
             Row {
                 spacing: 8
-                Layout.alignment: Qt.AlignVCenter // Gecorrigeerd naar Qt.AlignVCenter
+                Layout.alignment: Qt.AlignVCenter
                 Text {
                     text: "󰃞"
                     font {
@@ -107,7 +107,7 @@ Slider {
                 font.pixelSize: 12
                 color: Colors.colFg
                 opacity: 0.7
-                Layout.alignment: Qt.AlignVCenter // Gecorrigeerd naar Qt.AlignVCenter
+                Layout.alignment: Qt.AlignVCenter
             }
         }
     }

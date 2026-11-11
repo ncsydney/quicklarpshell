@@ -18,7 +18,7 @@ Rectangle {
     }
 
     color: currentPowerProfile === "performance"
-        ? Qt.rgba(0.9, 0.2, 0.2, 0.3)
+        ? Qt.alpha(MatuColors.md3.primary, 0.25)
         : Qt.rgba(1, 1, 1, 0.07)
 
     Behavior on color { ColorAnimation { duration: 150 } }

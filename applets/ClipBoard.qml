@@ -9,7 +9,6 @@ Rectangle {
     height: 44
     radius: 10
 
-    // Bepaalt of de tegel een achtergrond en border krijgt (QuickSettings vs Bar)
     property bool showBorder: false
 
     Process {

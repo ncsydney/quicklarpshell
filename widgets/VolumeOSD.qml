@@ -133,7 +133,7 @@ PanelWindow {
                     :                 "\uf026"
                 font.pixelSize: 18
                 font.family:    "JetBrainsMono Nerd Font"
-                color: root.muted ? Colors.colRed : Colors.colBlue
+                color: root.muted ? MatuColors.md3.error : MatuColors.md3.secondary
                 Behavior on color { ColorAnimation { duration: 150 } }
             }
 
@@ -144,7 +144,7 @@ PanelWindow {
                 Rectangle {
                     width:  parent.width * Math.min(root.vol / 100.0, 1.0)
                     height: parent.height; radius: parent.radius
-                    color:  root.muted ? Colors.colRed : Colors.colBlue
+                    color:  root.muted ? MatuColors.md3.error : MatuColors.md3.secondary
                     Behavior on width { NumberAnimation { duration: 80  } }
                     Behavior on color { ColorAnimation  { duration: 150 } }
                 }
@@ -154,11 +154,10 @@ PanelWindow {
                 text:                  root.muted ? "Muted" : root.vol + "%"
                 font.pixelSize:        12
                 font.weight:           Font.Medium
-                color:                 Colors.colFg
+                color:                 MatuColors.md3.on_surface
                 Layout.preferredWidth: 44
                 horizontalAlignment:   Text.AlignRight
             }
         }
     }
 }
-

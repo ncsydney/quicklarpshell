@@ -15,9 +15,8 @@ Rectangle {
         checkMuteProcess.running = true
     }
 
-    // Rode accentkleur wanneer gemutete, neutraal wanneer actief
     color: isMuted
-        ? Qt.rgba(0.9, 0.2, 0.2, 0.25)
+        ? Qt.alpha(MatuColors.md3.primary, 0.25)
         : Qt.rgba(1, 1, 1, 0.07)
 
     border.color: Qt.alpha(Colors.colFg, 0.15)

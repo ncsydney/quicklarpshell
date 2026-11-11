@@ -87,5 +87,3 @@ Item {
         }
     }
 }
-// * **Dispatch commando:** In de `MouseArea` van de scratchpad wordt `togglespecialworkspace scratchpad` aangeroepen. Als jij een specifieke naam voor je scratchpad gebruikt (bijv. `togglespecialworkspace minipad`), pas de string in `Hyprland.dispatch(...)` daar dan even op aan.
-// * **Verificatie:** Sla het bestand op en herlaad Quickshell. Je ziet nu een extra blokje verschijnen (met bijvoorbeeld een "s" of een icoon naar keuze) dat oplicht zodra er een venster in de scratchpad staat of wanneer deze actief is.

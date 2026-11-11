@@ -60,14 +60,14 @@ Slider {
         implicitHeight: 44
         radius: 12
         color: Qt.rgba(1, 1, 1, 0.07)
-        border.color: Qt.alpha(Colors.colFg, 0.15)
+        border.color: Qt.alpha(MatuColors.md3.on_background)
         border.width: 1
         clip: true
 
         Rectangle {
             width: root.visualPosition * parent.width
             height: parent.height
-            color: MatuColors.md3.secondary
+            color: Qt.alpha(MatuColors.md3.primary, 0.25)
             radius: parent.radius
         }
 
@@ -105,7 +105,7 @@ Slider {
                 text: Math.round(root.value) + "%"
                 font.family: "JetBrainsMono Nerd Font"
                 font.pixelSize: 12
-                color: Colors.colFg
+                color: MatuColors.md3.on_background
                 opacity: 0.7
                 Layout.alignment: Qt.AlignVCenter // Gecorrigeerd naar Qt.AlignVCenter
             }
