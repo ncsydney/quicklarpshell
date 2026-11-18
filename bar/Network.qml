@@ -1,13 +1,18 @@
 import Quickshell
 import QtQuick
+import QtQuick.Layouts
 import Quickshell.Networking
 import "../quicksettings"
+import "../settings"
 import "../theme"
 
 Rectangle {
     id: root
-    width: 157
-    height: 44
+    readonly property bool showLabel: root.showBorder || SettingsState.showNetworkName
+    implicitWidth: root.showBorder ? 157 : (contentRow.implicitWidth + 8)
+    implicitHeight: 44
+    Layout.preferredWidth: implicitWidth
+    Layout.preferredHeight: implicitHeight
     radius: 10
 
     property bool showBorder: false
@@ -28,25 +33,33 @@ Rectangle {
         return String.fromCodePoint(0xF091F + (tier - 1) * 3)
     }
 
+    // Achtergrond blijft stabiel (geen rare kleurverandering van het hele blok bij hover)
     color: showBorder ? Qt.rgba(1, 1, 1, 0.07) : "transparent"
     border.color: showBorder ? Qt.alpha(Colors.colFg, 0.15) : "transparent"
     border.width: showBorder ? 1 : 0
 
     Row {
+        id: contentRow
         anchors.centerIn: parent
-        spacing: 8
+        spacing: root.showLabel ? 8 : 0
 
-    Text {
+        Text {
             text: root.icon
             font {
                 family: "JetBrainsMono Nerd Font"
                 pixelSize: 16
                 bold: true
             }
-            color: MatuColors.md3.secondary
+            // Kleur verandert op basis van hover over de gehele component
+            color: mouseArea.containsMouse ? MatuColors.md3.primary : Colors.colFg
+
+            Behavior on color {
+                ColorAnimation { duration: 150 }
+            }
         }
 
         Text {
+            visible: root.showLabel
             text: {
                 if (!Networking.wifiEnabled) return "WiFi Off"
                 if (!root.active) return "WiFi"
@@ -57,14 +70,21 @@ Rectangle {
                 pixelSize: 16
                 bold: true
             }
-            color: Colors.colFg
+            // Zelfde hover-kleur voor de netwerknaam
+            color: mouseArea.containsMouse ? MatuColors.md3.primary : Colors.colFg
             elide: Text.ElideRight
-            width: 95
+            width: Math.min(implicitWidth, 95)
+
+            Behavior on color {
+                ColorAnimation { duration: 150 }
+            }
         }
     }
 
     MouseArea {
+        id: mouseArea
         anchors.fill: parent
+        hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: {
             if (!QuickSettingsState.settingsVisible) {
