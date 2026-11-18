@@ -29,27 +29,34 @@ Rectangle {
 
         Text {
             text: currentPowerProfile === "performance" ? "" : (currentPowerProfile === "power-saver" ? "" : "")
-            font{
+            font {
                 family: "JetBrainsMono Nerd Font"
                 pixelSize: 16
-                bold:true
+                bold: true
             }
-            color: currentPowerProfile === "performance" ? Qt.rgba(1, 0.5, 0.5, 1) : Colors.colFg
+            readonly property color baseColor: currentPowerProfile === "performance" ? Qt.rgba(1, 0.5, 0.5, 1) : Colors.colFg
+            color: mouseArea.containsMouse ? MatuColors.md3.primary : baseColor
+
+            Behavior on color { ColorAnimation { duration: 150 } }
         }
 
         Text {
             text: currentPowerProfile.charAt(0).toUpperCase() + currentPowerProfile.slice(1)
-            font{
+            font {
                 family: "JetBrainsMono Nerd Font"
                 pixelSize: 16
-                bold:true
+                bold: true
             }
-            color: Colors.colFg
+            color: mouseArea.containsMouse ? MatuColors.md3.primary : Colors.colFg
+
+            Behavior on color { ColorAnimation { duration: 150 } }
         }
     }
 
     MouseArea {
+        id: mouseArea
         anchors.fill: parent
+        hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
 
         onClicked: {

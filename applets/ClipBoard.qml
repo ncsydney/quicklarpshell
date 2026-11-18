@@ -31,7 +31,9 @@ Rectangle {
                 pixelSize: 16
                 bold: true
             }
-            color: Colors.colFg
+            color: mouseArea.containsMouse ? MatuColors.md3.primary : Colors.colFg
+
+            Behavior on color { ColorAnimation { duration: 150 } }
         }
 
         Text {
@@ -41,14 +43,18 @@ Rectangle {
                 pixelSize: 16
                 bold: true
             }
-            color: Colors.colFg
+            color: mouseArea.containsMouse ? MatuColors.md3.primary : Colors.colFg
             elide: Text.ElideRight
             width: 95
+
+            Behavior on color { ColorAnimation { duration: 150 } }
         }
     }
 
     MouseArea {
+        id: mouseArea
         anchors.fill: parent
+        hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: {
             clipboardProcess.running = true

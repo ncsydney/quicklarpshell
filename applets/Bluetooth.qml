@@ -1,5 +1,6 @@
 import Quickshell
 import QtQuick
+import QtQuick.Layouts
 import Quickshell.Bluetooth
 import Quickshell.Io
 import "../quicksettings"
@@ -10,6 +11,7 @@ Rectangle {
     width: 157
     height: 44
     radius: 10
+    clip: true
 
     property var adapter: Bluetooth.defaultAdapter
     property bool isEnabled: adapter ? adapter.enabled : false
@@ -25,11 +27,14 @@ Rectangle {
 
     Behavior on color { ColorAnimation { duration: 150 } }
 
-    Row {
-        anchors.centerIn: parent
+    RowLayout {
+        anchors.fill: parent
+        anchors.leftMargin: 12
+        anchors.rightMargin: 12
         spacing: 8
 
         Text {
+            Layout.alignment: Qt.AlignVCenter
             text: {
                 if (!isEnabled) return "󰂲"
                 if (!connectedDevice) return "󰂯"
@@ -38,30 +43,56 @@ Rectangle {
             font.family: "JetBrainsMono Nerd Font"
             font.pixelSize: 16
             font.bold: true
-            color: isEnabled ? MatuColors.md3.primary : MatuColors.md3.on_background
+            readonly property color baseColor: isEnabled ? MatuColors.md3.primary : MatuColors.md3.on_background
+            color: mouseArea.containsMouse ? Qt.lighter(baseColor, 1.3) : baseColor
+
+            Behavior on color { ColorAnimation { duration: 150 } }
         }
 
-        Text {
-            text: {
-                if (!isEnabled) return "Off"
-                if (!connectedDevice) return "Bluetooth"
+        ColumnLayout {
+            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignVCenter
+            spacing: -2
 
-                var devName = connectedDevice.name;
-                if (connectedDevice.batteryAvailable) {
-                    var batteryPct = Math.round(connectedDevice.battery * 100);
-                    return devName + " (" + batteryPct + "%)";
+            Text {
+                Layout.fillWidth: true
+                text: {
+                    if (!isEnabled) return "Off"
+                    if (!connectedDevice) return "Bluetooth"
+                    return connectedDevice.name;
                 }
-                return devName;
+                font.family: "JetBrainsMono Nerd Font"
+                font.pixelSize: connectedDevice ? 13 : 15
+                font.bold: true
+                color: mouseArea.containsMouse ? MatuColors.md3.primary : MatuColors.md3.on_background
+                elide: Text.ElideRight
+
+                Behavior on color { ColorAnimation { duration: 150 } }
             }
-            font.family: "JetBrainsMono Nerd Font"
-            font.pixelSize: 16
-            font.bold: true
-            color: MatuColors.md3.on_background
+
+            // Compacte batterij-indicator onder de apparaatnaam (alleen zichtbaar indien beschikbaar)
+            Text {
+                Layout.fillWidth: true
+                visible: isEnabled && connectedDevice && connectedDevice.batteryAvailable
+                text: connectedDevice && connectedDevice.batteryAvailable
+                      ? Math.round(connectedDevice.battery * 100) + "%"
+                      : ""
+                font.family: "JetBrainsMono Nerd Font"
+                font.pixelSize: 14
+                font.bold: true
+                color: mouseArea.containsMouse ? MatuColors.md3.primary : MatuColors.md3.on_background
+                opacity: 0.75
+                elide: Text.ElideRight
+
+                Behavior on color { ColorAnimation { duration: 150 } }
+            }
         }
     }
 
     MouseArea {
+        id: mouseArea
         anchors.fill: parent
+        hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: {
             if (!QuickSettingsState.settingsVisible) {

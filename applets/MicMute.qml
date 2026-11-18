@@ -50,27 +50,34 @@ Rectangle {
 
         Text {
             text: "󰍭"
-            font{
+            font {
                 family: "JetBrainsMono Nerd Font"
                 pixelSize: 16
                 bold: true
             }
-            color: isMuted ? MatuColors.md3.error : Colors.colFg
+            readonly property color baseColor: isMuted ? MatuColors.md3.error : Colors.colFg
+            color: mouseArea.containsMouse ? MatuColors.md3.primary : baseColor
+
+            Behavior on color { ColorAnimation { duration: 150 } }
         }
 
         Text {
             text: isMuted ? "Muted" : "Mic Mute"
-            font{
+            font {
                 family: "JetBrainsMono Nerd Font"
                 pixelSize: 16
                 bold: true
             }
-            color: Colors.colFg
+            color: mouseArea.containsMouse ? MatuColors.md3.primary : Colors.colFg
+
+            Behavior on color { ColorAnimation { duration: 150 } }
         }
     }
 
     MouseArea {
+        id: mouseArea
         anchors.fill: parent
+        hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: {
             toggleProcess.running = true
