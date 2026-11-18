@@ -2,13 +2,14 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell.Hyprland
 import "../theme"
+import "../settings"
 
 Item {
     property string fontFamily
     property int fontSize
 
-    // Aangepast naar 10 elementen (9 workspaces + 1 scratchpad)
-    implicitWidth: 10 * 20
+    // Dynamische breedte: gekozen aantal workspaces + 1 scratchpad ("S")
+    implicitWidth: (SettingsState.activeWorkspacesCount + 1) * 20
     implicitHeight: 30
     Layout.preferredWidth: implicitWidth
     Layout.preferredHeight: implicitHeight
@@ -18,7 +19,7 @@ Item {
         spacing: 0
 
         Repeater {
-            model: 9
+            model: SettingsState.activeWorkspacesCount
             Rectangle {
                 Layout.preferredWidth: 20
                 Layout.preferredHeight: parent.height
@@ -43,6 +44,7 @@ Item {
                     color: parent.isActive ? MatuColors.md3.error : Colors.colBg
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.bottom: parent.bottom
+                    Behavior on color { ColorAnimation { duration: 300 } }
                 }
 
                 MouseArea {
@@ -63,7 +65,7 @@ Item {
             property bool scratchpadHasWindows: (scratchpadWs?.toplevels?.values?.length ?? 0) > 0
 
             Text {
-                text: "S" // Je kunt hier ook een icoon neerzetten
+                text: "S"
                 color: (parent.isScratchpadActive || parent.scratchpadHasWindows) ? MatuColors.md3.secondary : Colors.colBrightBlack
                 font.pixelSize: fontSize
                 font.family: fontFamily
@@ -81,8 +83,7 @@ Item {
 
             MouseArea {
                 anchors.fill: parent
-                // Pas de dispatch-opdracht aan op basis van hoe jouw config special workspaces toggled
-                onClicked: Hyprland.dispatch("dispatch togglespecialworkspace kitty-scratchpad")
+                onClicked: Hyprland.dispatch("togglespecialworkspace kitty-scratchpad")
             }
         }
     }
