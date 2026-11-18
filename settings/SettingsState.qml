@@ -12,6 +12,7 @@ QtObject {
     function hide() { settingsVisible = false; }
 
     // ── Balk & Layout instellingen ───────────────────────────────────────────
+    property string activePreset: "default" // "default", "minimal", "glass", "dock" of ""
     property int barHeight: 45
     property int barMargin: 4
     property int cornerRadius: 16
@@ -43,47 +44,51 @@ QtObject {
     property bool hyprAnimations: true
 
     // ── Presets toepassen ────────────────────────────────────────────────────
-    function applyPreset(name) {
-        if (name === "minimal") {
-            barPosition = "top";
-            barHeight = 36;
-            barMargin = 2;
-            cornerRadius = 10;
-            panelOpacity = 0.92;
-            showSeparators = false;
-            showNetworkName = false;
-            showBatteryPercentage = false;
-            hyprGapsOut = 4;
-            hyprRounding = 8;
-        } else if (name === "glass") {
-            barPosition = "top";
-            barHeight = 46;
-            barMargin = 10;
-            cornerRadius = 20;
-            panelOpacity = 0.72;
-            showSeparators = true;
-            showNetworkName = true;
-            showBatteryPercentage = true;
-            hyprGapsOut = 14;
-            hyprRounding = 16;
-        } else if (name === "dock") {
-            barPosition = "bottom";
-            barHeight = 44;
-            barMargin = 6;
-            cornerRadius = 14;
-            panelOpacity = 0.88;
-            showSeparators = true;
-            showNetworkName = true;
-            showBatteryPercentage = true;
-            hyprGapsOut = 8;
-            hyprRounding = 12;
-        } else {
-            resetDefaults();
-            return;
+        function applyPreset(name) {
+            if (name === "minimal") {
+                activePreset = "minimal";
+                barPosition = "top";
+                barHeight = 36;
+                barMargin = 2;
+                cornerRadius = 10;
+                panelOpacity = 0.92;
+                showSeparators = false;
+                showNetworkName = false;
+                showBatteryPercentage = false;
+                hyprGapsOut = 4;
+                hyprRounding = 8;
+            } else if (name === "glass") {
+                activePreset = "glass";
+                barPosition = "top";
+                barHeight = 46;
+                barMargin = 10;
+                cornerRadius = 20;
+                panelOpacity = 0.72;
+                showSeparators = true;
+                showNetworkName = true;
+                showBatteryPercentage = true;
+                hyprGapsOut = 14;
+                hyprRounding = 16;
+            } else if (name === "dock") {
+                activePreset = "dock";
+                barPosition = "bottom";
+                barHeight = 44;
+                barMargin = 6;
+                cornerRadius = 14;
+                panelOpacity = 0.88;
+                showSeparators = true;
+                showNetworkName = true;
+                showBatteryPercentage = true;
+                hyprGapsOut = 8;
+                hyprRounding = 12;
+            } else {
+                activePreset = "default";
+                resetDefaults();
+                return;
+            }
+            save();
+            syncHyprland();
         }
-        save();
-        syncHyprland();
-    }
 
     function applyNightLight() {
         const temp = Math.round(root.nightLightTemp);
@@ -137,6 +142,7 @@ QtObject {
 
     // ── Reset naar standaardwaarden ──────────────────────────────────────────
     function resetDefaults() {
+        activePreset = "default";
         barHeight = 45;
         barMargin = 4;
         cornerRadius = 16;
@@ -173,6 +179,7 @@ QtObject {
         onLoaded: {
             try {
                 const data = JSON.parse(text());
+                if (data.activePreset !== undefined) root.activePreset = data.activePreset;
                 if (data.barHeight !== undefined) root.barHeight = data.barHeight;
                 if (data.barMargin !== undefined) root.barMargin = data.barMargin;
                 if (data.cornerRadius !== undefined) root.cornerRadius = data.cornerRadius;
@@ -207,6 +214,7 @@ QtObject {
 
     function save() {
         const payload = JSON.stringify({
+            activePreset: root.activePreset,
             barHeight: root.barHeight,
             barMargin: root.barMargin,
             cornerRadius: root.cornerRadius,

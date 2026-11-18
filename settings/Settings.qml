@@ -433,10 +433,9 @@ PanelWindow {
                                     { label: "Glass", value: "glass" },
                                     { label: "Dock", value: "dock" }
                                 ]
-                                currentValue: ""
+                                currentValue: SettingsState.activePreset
                                 onSelected: v => SettingsState.applyPreset(v)
                             }
-
                             SettingChoiceRow {
                                 readonly property var meta: root.item("barPosition")
                                 title: meta.title
