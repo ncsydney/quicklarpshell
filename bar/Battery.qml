@@ -2,11 +2,12 @@ import Quickshell
 import QtQuick
 import QtQuick.Layouts
 import "../theme"
+import "../settings"
 import Quickshell.Services.UPower
 
 RowLayout {
     id: root
-    spacing: 6
+    spacing: SettingsState.showBatteryPercentage ? 6 : 0
 
     property var battery: UPower.displayDevice
     property bool charging: battery.state === UPowerDeviceState.Charging
@@ -32,7 +33,8 @@ RowLayout {
     }
 
     Text {
-        text: root.level + "%  "
+        visible: SettingsState.showBatteryPercentage
+        text: root.level + "%"
         color: root.charging ? MatuColors.md3.tertiary : Colors.colFg
 
         font {
