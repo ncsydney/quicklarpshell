@@ -1,4 +1,4 @@
-# Mijn quickshell config voor Hyprland
+# Quickshell config for Hyprland
 
 
 ## Main Overview
@@ -12,7 +12,7 @@
 ## Theme switcher
 ![Output](qs_themeswitcher.png)
 
-## Keybinds in Hyprland voor Quickshell
+## Keybinds in Hyprland for Quickshell
 ```lua
 hl.bind(mainMod .. " + K", hl.dsp.exec_cmd("qs ipc call quicksettings toggleBluetooth"))
 hl.bind(mainMod .. " + P",       hl.dsp.exec_cmd("qs ipc call mediaplayer toggle"))
