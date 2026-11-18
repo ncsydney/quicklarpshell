@@ -45,19 +45,19 @@ PanelWindow {
 
     // ── Layer / geometry ─────────────────────────────────────────────────────
     anchors {
-	top: true
-	bottom: true
-	left: true
-	right: true
+        top: true
+        bottom: true
+        left: true
+        right: true
     }
 
     mask: Region {
-	item: PowerMenuState.powerVisible ? maskCover : null
+        item: PowerMenuState.powerVisible ? maskCover : null
     }
 
     Item {
-	id: maskCover
-	anchors.fill: parent
+        id: maskCover
+        anchors.fill: parent
     }
 
     color: "transparent"
@@ -66,10 +66,10 @@ PanelWindow {
     WlrLayershell.keyboardFocus: PowerMenuState.powerVisible ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
     WlrLayershell.namespace: "qs-powermenu-noanim"
 
-    // ── Slide offset ─────────────────────────────────────────────────────────
-    property real slideOffset: PowerMenuState.powerVisible ? 0 : powerCard.width + 8
+    // ── Slide offset (binnen de clip-container onder de balk) ────────────────
+    property real slideOffset: PowerMenuState.powerVisible ? 0 : -(powerCard.height + 16)
     Behavior on slideOffset {
-        NumberAnimation { duration: 500; easing.type: Easing.OutCubic }
+        NumberAnimation { duration: 350; easing.type: Easing.OutCubic }
     }
 
     // ── Process runners ──────────────────────────────────────────────────────
@@ -101,125 +101,128 @@ PanelWindow {
     }
 
     MouseArea {
-	anchors.fill: parent
-	enabled: PowerMenuState.powerVisible
-	onClicked: PowerMenuState.hide()
+        anchors.fill: parent
+        enabled: PowerMenuState.powerVisible
+        onClicked: PowerMenuState.hide()
     }
 
-    // ── Menu card ────────────────────────────────────────────────────────────
-    Rectangle {
-        id: powerCard
-
-        focus: true
-
-        // ── Key handling ──
-        Keys.onPressed: function(event) {
-            if (!PowerMenuState.powerVisible) return;
-            if (event.key === Qt.Key_Up) {
-                root.selectedIndex = (root.selectedIndex - 1 + root.buttonCount) % root.buttonCount;
-                event.accepted = true;
-            } else if (event.key === Qt.Key_Down) {
-                root.selectedIndex = (root.selectedIndex + 1) % root.buttonCount;
-                event.accepted = true;
-            } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                if (root.selectedIndex >= 0) root.activateSelected();
-                event.accepted = true;
-            }
-        }
-        Keys.onEscapePressed: PowerMenuState.hide()
-
-        anchors.verticalCenter: parent.verticalCenter
-
-        x: -root.slideOffset
-
+    // ── Clip-container onder de balk (voorkomt schuiven over de balk heen) ───
+    Item {
+        id: menuClipBox
+        x: 4
+        y: 52
         width: 200
-        height: menuCol.implicitHeight + 32
+        height: powerCard.height + 16
+        clip: true
 
-        topLeftRadius: 0
-        bottomLeftRadius: 0
-        topRightRadius: 18
-        bottomRightRadius: 18
-
-        color: Qt.rgba(Colors.colBg.r, Colors.colBg.g, Colors.colBg.b, 0.85)
-
-        // Border overlay
+        // ── Menu card ────────────────────────────────────────────────────────
         Rectangle {
-            anchors.fill: parent
-            z: 1
-            color: "transparent"
-            topLeftRadius: 0
-            bottomLeftRadius: 0
-            topRightRadius: parent.topRightRadius
-            bottomRightRadius: parent.bottomRightRadius
-            border.color: Qt.rgba(Colors.colFg.r, Colors.colFg.g, Colors.colFg.b, 0.08)
-            border.width: 1
-        }
+            id: powerCard
 
-        // Eat clicks so background doesn't dismiss on card clicks
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {}
-        }
+            focus: true
 
-        ColumnLayout {
-            id: menuCol
-            anchors {
-                top: parent.top
-                left: parent.left
-                right: parent.right
-                margins: 16
-                topMargin: 16
+            // ── Key handling ──
+            Keys.onPressed: function(event) {
+                if (!PowerMenuState.powerVisible) return;
+                if (event.key === Qt.Key_Up) {
+                    root.selectedIndex = (root.selectedIndex - 1 + root.buttonCount) % root.buttonCount;
+                    event.accepted = true;
+                } else if (event.key === Qt.Key_Down) {
+                    root.selectedIndex = (root.selectedIndex + 1) % root.buttonCount;
+                    event.accepted = true;
+                } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                    if (root.selectedIndex >= 0) root.activateSelected();
+                    event.accepted = true;
+                }
             }
-            spacing: 6
+            Keys.onEscapePressed: PowerMenuState.hide()
 
-            Text {
-                Layout.fillWidth: true
-                text: "POWER"
-                color: Qt.rgba(Colors.colFg.r, Colors.colFg.g, Colors.colFg.b, 0.35)
-                font.pixelSize: 10
-                font.letterSpacing: 3
-                horizontalAlignment: Text.AlignHCenter
-            }
+            x: 0
+            y: root.slideOffset
 
-            Item { Layout.preferredHeight: 4 }
+            width: 200
+            height: menuCol.implicitHeight + 32
 
-            PowerButton {
-                label: "Lock"
-                icon: "󰌾"
-                hoverColor: Colors.colCyan
-                selected: root.selectedIndex === 0
-                onActivated: root.runAndClose(procLock)
-            }
-            PowerButton {
-                label: "Suspend"
-                icon: "󰒲"
-                hoverColor: Colors.colBlue
-                selected: root.selectedIndex === 1
-                onActivated: root.runAndClose(procSuspend)
-            }
-            PowerButton {
-                label: "Hibernate"
-                icon: "󰋊"
-                hoverColor: Colors.colPurple
-                selected: root.selectedIndex === 2
-                onActivated: root.runAndClose(procHibernate)
-            }
-            PowerButton {
-                label: "Reboot"
-                icon: "󰜉"
-                hoverColor: Colors.colYellow
-                selected: root.selectedIndex === 3
-                onActivated: root.runAndClose(procReboot)
-            }
-            PowerButton {
-                label: "Shutdown"
-                icon: "󰐥"
-                hoverColor: Colors.colRed
-                selected: root.selectedIndex === 4
-                onActivated: root.runAndClose(procShutdown)
+            radius: 16
+
+            color: MatuColors.md3.surface
+
+            // Border overlay
+            Rectangle {
+                anchors.fill: parent
+                z: 1
+                color: "transparent"
+                radius: parent.radius
+                border.color: Qt.rgba(Colors.colFg.r, Colors.colFg.g, Colors.colFg.b, 0.08)
+                border.width: 1
             }
 
-            Item { Layout.preferredHeight: 2 }
+            // Eat clicks so background doesn't dismiss on card clicks
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {}
+            }
+
+            ColumnLayout {
+                id: menuCol
+                anchors {
+                    top: parent.top
+                    left: parent.left
+                    right: parent.right
+                    margins: 16
+                    topMargin: 16
+                }
+                spacing: 6
+
+                Text {
+                    Layout.fillWidth: true
+                    text: "POWER"
+                    color: Qt.rgba(Colors.colFg.r, Colors.colFg.g, Colors.colFg.b, 0.35)
+                    font.pixelSize: 10
+                    font.letterSpacing: 3
+                    horizontalAlignment: Text.AlignHCenter
+                }
+
+                Item { Layout.preferredHeight: 4 }
+
+                PowerButton {
+                    label: "Lock"
+                    icon: "󰌾"
+                    hoverColor: Colors.colCyan
+                    selected: root.selectedIndex === 0
+                    onActivated: root.runAndClose(procLock)
+                }
+                PowerButton {
+                    label: "Suspend"
+                    icon: "󰒲"
+                    hoverColor: Colors.colBlue
+                    selected: root.selectedIndex === 1
+                    onActivated: root.runAndClose(procSuspend)
+                }
+                PowerButton {
+                    label: "Hibernate"
+                    icon: "󰋊"
+                    hoverColor: Colors.colPurple
+                    selected: root.selectedIndex === 2
+                    onActivated: root.runAndClose(procHibernate)
+                }
+                PowerButton {
+                    label: "Reboot"
+                    icon: "󰜉"
+                    hoverColor: Colors.colYellow
+                    selected: root.selectedIndex === 3
+                    onActivated: root.runAndClose(procReboot)
+                }
+                PowerButton {
+                    label: "Shutdown"
+                    icon: "󰐥"
+                    hoverColor: Colors.colRed
+                    selected: root.selectedIndex === 4
+                    onActivated: root.runAndClose(procShutdown)
+                }
+
+                Item { Layout.preferredHeight: 2 }
+            }
         }
     }
 
