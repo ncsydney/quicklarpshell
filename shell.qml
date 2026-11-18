@@ -8,6 +8,9 @@ import "./widgets"
 import "./power_menu"
 import "./quicksettings"
 import "./mediaplayer"
+import "./applets"
+import "./settings"
+
 ShellRoot {
     // ── Bar ────────────────────────────────────────────────────────────────
     Variants {
@@ -19,13 +22,14 @@ ShellRoot {
     }
 
     // ── Media Panel Overlay ────────────────────────────────────────────────
-        Variants {
-            model: Quickshell.screens
-            MediaPlayer {
-                property var modelData
-                screen: modelData
-            }
+    Variants {
+        model: Quickshell.screens
+        MediaPlayer {
+            property var modelData
+            screen: modelData
         }
+    }
+
     // ── Volume OSD (auto-shows on PipeWire sink events) ────────────────────
     Variants {
         model: Quickshell.screens
@@ -42,6 +46,7 @@ ShellRoot {
             screen: modelData
         }
     }
+
     // ── Power menu overlay ─────────────────────────────────────────────────
     Variants {
         model: Quickshell.screens
@@ -51,6 +56,7 @@ ShellRoot {
         }
     }
 
+    // ── QuickSettings dropdown ─────────────────────────────────────────────
     Variants {
         model: Quickshell.screens
         QuickSettings {
@@ -58,4 +64,15 @@ ShellRoot {
             screen: modelData
         }
     }
+
+    // ── Settings Overlay ───────────────────────────────────────────────────
+    Variants {
+        model: Quickshell.screens
+        Settings {
+            property var modelData
+            screen: modelData
+        }
+    }
+
+    ThemeSwitcher {}
 }
