@@ -15,17 +15,6 @@ PanelWindow {
 
     property string currentPowerProfile: "balanced"
 
-    Component.onCompleted: {
-        getProfileProcess.running = true;
-    }
-
-    IpcHandler {
-        target: "quicksettings"
-        function toggle() {
-            QuickSettingsState.toggle();
-        }
-    }
-
     IpcHandler {
         target: "quicksettings"
         function toggle() {
@@ -39,6 +28,7 @@ PanelWindow {
         }
     }
 
+    exclusionMode: ExclusionMode.Ignore
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.keyboardFocus: QuickSettingsState.settingsVisible ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
     WlrLayershell.namespace: "quickshell-quicksettings"
@@ -48,12 +38,19 @@ PanelWindow {
         function onSettingsVisibleChanged() {
             if (QuickSettingsState.settingsVisible) {
                 panel.forceActiveFocus();
-                getProfileProcess.running = true;
             }
         }
     }
 
     anchors { top: true; bottom: true; left: true; right: true }
+
+    // ── Slide offset (binnen de clip-container onder de balk) ────────────────
+    property real slideOffset: QuickSettingsState.settingsVisible ? 0 : -(panel.height + 16)
+    Behavior on slideOffset {
+        NumberAnimation { duration: 350; easing.type: Easing.OutCubic }
+    }
+
+    visible: QuickSettingsState.settingsVisible || slideOffset > -(panel.height + 15)
 
     mask: Region {
         item: QuickSettingsState.settingsVisible ? maskCover : null
@@ -71,105 +68,115 @@ PanelWindow {
         onClicked: QuickSettingsState.hide()
     }
 
-    Rectangle {
-        id: panel
-        width: 360
-        height: 440
+    // ── Clip-container onder de rechter pill van je balk ─────────────────────
+    Item {
+        id: settingsClipBox
+        anchors.right: parent.right
+        anchors.rightMargin: 4
+        y: 52
+        width: panel.width
+        height: panel.height + 16
+        clip: true
 
-        focus: true
-        Keys.onPressed: function(event) {
-            if (event.key === Qt.Key_Escape) {
-                if (QuickSettingsState.networkMenuVisible) {
-                    QuickSettingsState.networkMenuVisible = false;
-                } else if (QuickSettingsState.bluetoothMenuVisible) {
-                    QuickSettingsState.bluetoothMenuVisible = false;
-                } else {
-                    QuickSettingsState.hide();
+        Rectangle {
+            id: panel
+            width: 360
+            height: contentCol.implicitHeight + 32
+            x: 0
+            y: root.slideOffset
+
+            Behavior on height {
+                NumberAnimation { duration: 220; easing.type: Easing.OutCubic }
+            }
+
+            focus: true
+            Keys.onPressed: function(event) {
+                if (event.key === Qt.Key_Escape) {
+                    if (QuickSettingsState.networkMenuVisible) {
+                        QuickSettingsState.networkMenuVisible = false;
+                    } else if (QuickSettingsState.bluetoothMenuVisible) {
+                        QuickSettingsState.bluetoothMenuVisible = false;
+                    } else {
+                        QuickSettingsState.hide();
+                    }
+                    event.accepted = true;
                 }
-                event.accepted = true;
             }
-        }
 
-        anchors {
-            right: parent.right
-            top: parent.top
-            rightMargin: 16
-            topMargin: 38
-        }
+            color: MatuColors.md3.surface
+            radius: 16
+            border.color: Qt.alpha(MatuColors.md3.on_surface, 0.10)
+            border.width: 1
 
-        color: Qt.rgba(Colors.colBg.r, Colors.colBg.g, Colors.colBg.b, 0.88)
-        radius: 18
-        border.color: Qt.alpha(Colors.colFg, 0.10)
-        border.width: 1
-
-        opacity: QuickSettingsState.settingsVisible ? 1 : 0
-        visible: opacity > 0
-        Behavior on opacity {
-            NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
-        }
-
-        transform: Translate {
-            y: QuickSettingsState.settingsVisible ? 0 : -10
-            Behavior on y {
-                NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
+            // Voorkom sluiten bij klikken binnen het paneel zelf
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {}
             }
-        }
 
-        Column {
-            anchors.fill: parent
-            anchors.margins: 16
-            spacing: 16
-
-            // VIEW 1: Hoofd QuickSettings Grid & Sliders (verborgen als netwerk- of bluetoothmenu open is)
             Column {
-                width: parent.width
+                id: contentCol
+                anchors {
+                    top: parent.top
+                    left: parent.left
+                    right: parent.right
+                    margins: 16
+                }
                 spacing: 16
-                visible: !QuickSettingsState.networkMenuVisible && !QuickSettingsState.bluetoothMenuVisible
 
-                Text {
-                    text: "Quick Settings"
-                    color: Colors.colFg
-                    font {
-                        pixelSize: 15
-                        family: "JetBrainsMono Nerd Font"
-                        weight: Font.Bold
+                // VIEW 1: Hoofd QuickSettings Grid & Sliders (verborgen als netwerk- of bluetoothmenu open is)
+                Column {
+                    width: parent.width
+                    spacing: 16
+                    visible: !QuickSettingsState.networkMenuVisible && !QuickSettingsState.bluetoothMenuVisible
+
+                    Text {
+                        text: "Quick Settings"
+                        color: Colors.colFg
+                        font {
+                            pixelSize: 15
+                            family: "JetBrainsMono Nerd Font"
+                            weight: Font.Bold
+                        }
+                    }
+
+                    Grid {
+                        width: parent.width
+                        columns: 2
+                        spacing: 10
+
+                        Network { showBorder: true }
+                        Bluetooth {}
+                        PowerProfile {}
+                        MicMute {}
+                        ClipBoard { showBorder: true }
+                        NightLight {}
+                    }
+
+                    Column {
+                        width: parent.width
+                        spacing: 12
+                        AudioOutput {}
+                        VolumeSlider {}
+                        BrightnessSlider {}
                     }
                 }
 
-                Grid {
+                // VIEW 2: Netwerk Submenu
+                NetworkSelector {
                     width: parent.width
-                    columns: 2
-                    spacing: 10
-
-                    Network{showBorder: true}
-                    Bluetooth{}
-                    PowerProfile{}
-                    MicMute{}
-                    ClipBoard{showBorder: true}
+                    height: 408
+                    visible: QuickSettingsState.networkMenuVisible
+                    onCloseRequested: QuickSettingsState.networkMenuVisible = false
                 }
 
-                Column {
+                // VIEW 3: Bluetooth Submenu
+                BluetoothSelector {
                     width: parent.width
-                    spacing: 12
-                    VolumeSlider{}
-                    BrightnessSlider{}
+                    height: 408
+                    visible: QuickSettingsState.bluetoothMenuVisible
+                    onCloseRequested: QuickSettingsState.bluetoothMenuVisible = false
                 }
-            }
-
-            // VIEW 2: Netwerk Submenu
-            NetworkSelector {
-                width: parent.width
-                height: parent.height - 32
-                visible: QuickSettingsState.networkMenuVisible
-                onCloseRequested: QuickSettingsState.networkMenuVisible = false
-            }
-
-            // VIEW 3: Bluetooth Submenu
-            BluetoothSelector {
-                width: parent.width
-                height: parent.height - 32
-                visible: QuickSettingsState.bluetoothMenuVisible
-                onCloseRequested: QuickSettingsState.bluetoothMenuVisible = false
             }
         }
     }

@@ -40,7 +40,7 @@ ColumnLayout {
             Text {
                 anchors.centerIn: parent
                 text: root.selectedNetwork ? "󰁍" : "󰅖"
-                color: Colors.colFg
+                color: MatuColors.md3.primary
                 font.family: "JetBrainsMono Nerd Font"
                 font.pixelSize: 14
             }
@@ -96,7 +96,7 @@ ColumnLayout {
 
                 Text {
                     text: modelData.connected ? "󰤨" : "󰤯"
-                    color: modelData.connected ? Colors.colBlue : Colors.colFg
+                    color: modelData.connected ? MatuColors.md3.primary : Colors.colFg
                     font.family: "JetBrainsMono Nerd Font"
                     font.pixelSize: 16
                 }
@@ -116,7 +116,7 @@ ColumnLayout {
                 Text {
                     visible: modelData.connected
                     text: "󰄬"
-                    color: Colors.colBlue
+                    color: MatuColors.md3.primary
                     font.family: "JetBrainsMono Nerd Font"
                     font.pixelSize: 16
                 }
@@ -209,7 +209,7 @@ ColumnLayout {
             height: 38
             radius: 12
             color: btnMouse.containsMouse ? Qt.rgba(Colors.colBlue.r, Colors.colBlue.g, Colors.colBlue.b, 0.35) : Qt.rgba(Colors.colBlue.r, Colors.colBlue.g, Colors.colBlue.b, 0.25)
-            border.color: Qt.alpha(Colors.colBlue, 0.5)
+            border.color: Qt.alpha(MatuColors.md3.primary, 0.25)
             border.width: 1
 
             Text {

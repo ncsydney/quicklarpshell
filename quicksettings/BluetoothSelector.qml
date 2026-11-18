@@ -30,7 +30,7 @@ ColumnLayout {
 
         Text {
             text: "Bluetooth"
-            color: Colors.colFg
+            color: MatuColors.md3.on_background
             font {
                 pixelSize: 14
                 family: "JetBrainsMono Nerd Font"
@@ -43,15 +43,15 @@ ColumnLayout {
         // Bluetooth Aan/Uit Schakelaar
         Rectangle {
             width: 36; height: 22; radius: 11
-            color: root.isEnabled ? Colors.colBlue : Qt.rgba(1, 1, 1, 0.15)
-            border.color: root.isEnabled ? Qt.alpha(Colors.colBlue, 0.5) : Qt.alpha(Colors.colFg, 0.2)
+            color: root.isEnabled ? MatuColors.md3.primary : Qt.rgba(1, 1, 1, 0.15)
+            border.color: root.isEnabled ? Qt.alpha(MatuColors.md3.primary, 0.5) : Qt.alpha(MatuColors.md3.on_background, 0.2)
             border.width: 1
 
             Rectangle {
                 width: 16; height: 16; radius: 8
                 y: 2
                 x: root.isEnabled ? parent.width - width - 3 : 3
-                color: Colors.colFg
+                color: MatuColors.md3.on_background
 
                 Behavior on x {
                     NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
@@ -75,14 +75,14 @@ ColumnLayout {
         // Scan knop (verbreed zodat de tekst "Scan" / "Bezig..." past)
         Rectangle {
             width: 56; height: 28; radius: 14
-            color: root.isScanning ? Qt.rgba(Colors.colBlue.r, Colors.colBlue.g, Colors.colBlue.b, 0.35) : Qt.rgba(1, 1, 1, 0.15)
-            border.color: root.isScanning ? Qt.alpha(Colors.colBlue, 0.5) : "transparent"
+            color: root.isScanning ? Qt.rgba(MatuColors.md3.primary.r, MatuColors.md3.primary.g, MatuColors.md3.primary.b, 0.35) : Qt.rgba(1, 1, 1, 0.15)
+            border.color: root.isScanning ? Qt.alpha(MatuColors.md3.primary, 0.5) : "transparent"
             border.width: 1
 
             Text {
                 anchors.centerIn: parent
                 text: root.isScanning ? "Scanning." : "Scan"
-                color: Colors.colFg
+                color: MatuColors.md3.on_background
                 font.family: "JetBrainsMono Nerd Font"
                 font.pixelSize: 12
             }
@@ -106,7 +106,7 @@ ColumnLayout {
             Text {
                 anchors.centerIn: parent
                 text: "󰅖"
-                color: Colors.colFg
+                color: MatuColors.md3.on_background
                 font.family: "JetBrainsMono Nerd Font"
                 font.pixelSize: 14
             }
@@ -130,7 +130,7 @@ ColumnLayout {
             anchors.centerIn: parent
             visible: !root.isEnabled || (root.adapter && root.adapter.devices.values.length === 0)
             text: !root.isEnabled ? "Bluetooth Off" : (root.isScanning ? "Searching..." : "No Devices Found")
-            color: Colors.colFg
+            color: MatuColors.md3.on_background
             opacity: 0.5
             font {
                 pixelSize: 12
@@ -142,8 +142,8 @@ ColumnLayout {
             width: ListView.view.width
             height: 38
             radius: 12
-            color: modelData.connected ? Qt.rgba(Colors.colBlue.r, Colors.colBlue.g, Colors.colBlue.b, 0.25) : Qt.rgba(1, 1, 1, 0.07)
-            border.color: modelData.connected ? Qt.alpha(Colors.colBlue, 0.5) : Qt.alpha(Colors.colFg, 0.1)
+            color: modelData.connected ? Qt.rgba(MatuColors.md3.primary.r, MatuColors.md3.primary.g, MatuColors.md3.primary.b, 0.25) : Qt.rgba(1, 1, 1, 0.07)
+            border.color: modelData.connected ? Qt.alpha(MatuColors.md3.primary, 0.5) : Qt.alpha(MatuColors.md3.on_background, 0.1)
             border.width: 1
 
             RowLayout {
@@ -153,7 +153,7 @@ ColumnLayout {
 
                 Text {
                     text: modelData.connected ? "󰂱" : "󰂯"
-                    color: modelData.connected ? Colors.colBlue : Colors.colFg
+                    color: modelData.connected ? MatuColors.md3.primary : MatuColors.md3.on_background
                     font.family: "JetBrainsMono Nerd Font"
                     font.pixelSize: 16
                 }
@@ -167,7 +167,7 @@ ColumnLayout {
                         }
                         return devName;
                     }
-                    color: Colors.colFg
+                    color: MatuColors.md3.on_background
                     elide: Text.ElideRight
                     font {
                         pixelSize: 12
@@ -179,7 +179,7 @@ ColumnLayout {
                 Text {
                     visible: modelData.connected
                     text: "󰄬"
-                    color: Colors.colBlue
+                    color: MatuColors.md3.primary
                     font.family: "JetBrainsMono Nerd Font"
                     font.pixelSize: 16
                 }
