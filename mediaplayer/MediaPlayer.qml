@@ -300,7 +300,7 @@ PanelWindow {
                         Rectangle {
                             height: parent.height
                             radius: 2
-                            color: Colors.colBlue
+                            color: MatuColors.md3.primary
                             width: {
                                 if (!root.activePlayer || root.activePlayer.length === 0) return 0;
                                 return parent.width * Math.min(1.0, root.livePosition / root.activePlayer.length);
@@ -344,14 +344,14 @@ PanelWindow {
                     // Shuffle Knop
                     Rectangle {
                         width: 32; height: 32; radius: 16
-                        color: (root.activePlayer && root.activePlayer.shuffle) ? Qt.rgba(Colors.colBlue.r, Colors.colBlue.g, Colors.colBlue.b, 0.25) : "transparent"
-                        border.color: (root.activePlayer && root.activePlayer.shuffle) ? Qt.alpha(Colors.colBlue, 0.5) : "transparent"
+                        color: (root.activePlayer && root.activePlayer.shuffle) ? "transparent" : "transparent"
+                        border.color: (root.activePlayer && root.activePlayer.shuffle) ? "transparent" : "transparent"
                         border.width: (root.activePlayer && root.activePlayer.shuffle) ? 1 : 0
 
                         Text {
                             anchors.centerIn: parent
                             text: "󰒟"
-                            color: (root.activePlayer && root.activePlayer.shuffle) ? Colors.colBlue : Colors.colFg
+                            color: (root.activePlayer && root.activePlayer.shuffle) ? MatuColors.md3.primary : Colors.colFg
                             opacity: (root.activePlayer && root.activePlayer.shuffle) ? 1.0 : 0.7
                             font.family: "JetBrainsMono Nerd Font"
                             font.pixelSize: 14
@@ -386,14 +386,16 @@ PanelWindow {
                     // Play / Pause Knop
                     Rectangle {
                         width: 42; height: 42; radius: 21
-                        color: Qt.rgba(Colors.colBlue.r, Colors.colBlue.g, Colors.colBlue.b, 0.3)
-                        border.color: Qt.alpha(Colors.colBlue, 0.5)
+                        // color: Qt.rgba(Colors.colBlue.r, Colors.colBlue.g, Colors.colBlue.b, 0.3)
+                        color: "transparent"
+                        border.color: "transparent"
+                        // border.color: Qt.alpha(MatuColors.md3.primary, 0.5)
                         border.width: 1
 
                         Text {
                             anchors.centerIn: parent
                             text: (root.activePlayer && root.activePlayer.isPlaying) ? "󰏤" : "󰐊"
-                            color: Colors.colBlue
+                            color: Colors.colFg
                             font.family: "JetBrainsMono Nerd Font"
                             font.pixelSize: 18
                         }
